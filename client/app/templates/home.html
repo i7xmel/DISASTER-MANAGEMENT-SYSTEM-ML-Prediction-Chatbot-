@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Res-Q - Homepage</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Favicons -->
+    <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+    <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/icofont/icofont.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/owl.carousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/venobox/venobox.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{{ url_for('static', filename='assets/css/style.css') }}" rel="stylesheet">
+
+    <!-- Chatbot CSS -->
+    <style>
+        #chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: url("{{ url_for('static', filename='assets/img/chatbot-icon.png') }}") no-repeat center center;
+            background-size: cover;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        #chat-icon:hover {
+            transform: scale(1.1);
+        }
+
+        #chat-popup {
+            position: absolute;
+            bottom: 70px;
+            right: 5px;
+            background: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+            display: none;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1002;
+        }
+
+        #chat-popup::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            right: 15px;
+            width: 10px;
+            height: 10px;
+            background: #007bff;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+        }
+
+        #chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            max-height: 500px;
+        }
+
+        #chat-container.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        #chatbox {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid #eee;
+            background: #f9f9f9;
+            border-radius: 0 0 15px 15px;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            margin-right: 10px;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        #user-input:focus {
+            border-color: #007bff;
+        }
+
+        #send-button {
+            width: 40px;
+            height: 40px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        #send-button:hover {
+            background: #0056b3;
+        }
+
+        #send-button i {
+            font-size: 18px;
+        }
+
+        /* Message Styling */
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: #007bff;
+            color: white;
+            border-radius: 18px 18px 0 18px;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background: #f1f1f1;
+            color: #333;
+            border-radius: 18px 18px 18px 0;
+        }
+
+        .bot-message strong {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .bot-message ol, .bot-message ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .bot-message li {
+            margin-bottom: 5px;
+        }
+
+        .typing-indicator {
+            display: inline-block;
+        }
+
+        .typing-dots {
+            display: inline-flex;
+            align-items: center;
+            height: 20px;
+        }
+
+        .typing-dots span {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background: #666;
+            border-radius: 50%;
+            display: inline-block;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+    </style>
+
+
+
+    
+
+
+
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header id="header" class="fixed-top header-transparent">
+        <div class="container d-flex align-items-center">
+            <div class="logo mr-auto">
+                <h1 class="text-light"><a href="/">Res-Q</a></h1>
+            </div>
+            <nav class="nav-menu d-none d-lg-block">
+                <ul>
+                    <li class="active"><a href="/">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li class="get-started"><a href="/register">Register</a></li>
+                    <li class="get-started"><a href="/login">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="d-flex align-items-center">
+        <div class="container">
+            {% if message %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-lg-6 d-lg-flex flex-lg-column justify-content-center align-items-stretch pt-5 pt-lg-0 order-2 order-lg-1" data-aos="fade-up">
+                    <div>
+                        <h1><span style="font-size: 8rem; font-weight: bold;">Res-Q</span>  
+                            <small style="font-size: 1.5rem; font-weight: normal; display: block;">
+                                A Disaster Response and Relief Platform
+                            </small>
+                        </h1>
+                        <h2>Disaster management system where recipients can request resources related to disaster events and donors can assist recipients.</h2>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-lg-flex flex-lg-column align-items-stretch order-1 order-lg-2 hero-img" data-aos="fade-up">
+                    <img src="{{ url_for('static', filename='assets/img/hero-img.png') }}" class="img-fluid" alt="" style="max-width: 90%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="main">
+        <!-- App Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Features</h2>
+                    <p>Our Disaster Assistance Management System provides a robust platform for efficient crisis response. Users can report disasters, request essential resources, and donate supplies such as food, clothing, and medical aid. The system seamlessly connects those in need with donors and relief organizations, ensuring timely assistance and effective resource distribution.</p>
+                </div>
+                <div class="row no-gutters">
+                    <div class="col-xl-7 d-flex align-items-stretch order-2 order-lg-1">
+                        <div class="content d-flex flex-column justify-content-center">
+                            <div class="row">
+                                <div class="col-md-6 icon-box" data-aos="fade-up">
+                                    <i class="bx bx-receipt"></i>
+                                    <h4>Ask for Assistance</h4>
+                                    <p>Recipient users can choose disaster events and the required resource</p>
+                                </div>
+                                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="100">
+                                    <i class="bx bx-cube-alt"></i>
+                                    <h4>Donate Resources</h4>
+                                    <p>Donors can navigate through recipient requests and give required resources</p>
+                                </div>
+                                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
+                                    <i class="bx bx-images"></i>
+                                    <h4>Pledge</h4>
+                                    <p>Donors can pledge resources which will be matched to deserving recipients</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="image col-xl-5 d-flex align-items-stretch justify-content-center order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+                        <img src="{{ url_for('static', filename='assets/img/features1.jpg') }}" class="img-fluid" alt="" style="max-width: 80%; height: auto;">
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <section style="font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #f5f9ff 0%, #e6f0ff 100%); color: #2a4e7a; border-radius: 12px; overflow: hidden; padding: 2rem; margin: 2rem auto; max-width: 1000px; box-shadow: 0 10px 30px rgba(42, 78, 122, 0.1);">
+                <div class="container mt-4">
+                    <!-- Modern Header -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="margin: 0; font-size: 1.8rem; font-weight: 600; color: #2a4e7a; position: relative;">
+                            Emergency Hotspots
+                            <div style="position: absolute; bottom: -8px; left: 0; width: 60px; height: 3px; background: linear-gradient(90deg, #4dabff, #a0d0ff); border-radius: 3px;"></div>
+                        </h2>
+                        <div style="background: rgba(77, 171, 255, 0.1); padding: 0.5rem 1rem; border-radius: 20px; color: #2a6bb5; font-size: 0.9rem;">
+                            <span style="display: inline-block; width: 10px; height: 10px; background: #4dabff; border-radius: 50%; margin-right: 8px;"></span>
+                            Live Monitoring
+                        </div>
+                    </div>
+            
+                    <!-- Control Center -->
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        <button id="hotspot-button" style="background: linear-gradient(90deg, #4dabff, #6bc0ff); border: none; border-radius: 8px; padding: 0.8rem 2rem; color: white; font-weight: 500; cursor: pointer; box-shadow: 0 4px 15px rgba(77, 171, 255, 0.3); transition: all 0.3s; font-size: 1rem;">
+                            Get Hotspots
+                        </button>
+                    </div>
+            
+                    <!-- Data Display -->
+                    <div style="background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 5px 20px rgba(42, 78, 122, 0.05);">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr style="color: #4a6b8a; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e6f0ff;">
+                                    <th>City</th>
+                                    <th>Temperature (°C)</th>
+                                    <th>Humidity (%)</th>
+                                    <th>Wind Speed (m/s)</th>
+                                    <th>Risk Level</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hotspotTable">
+                                <tr>
+                                    <td colspan="5" style="padding: 1.5rem; text-align: center; color: #7d9bbd;">Click "Get Hotspots" to load data.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+            
+                    <!-- Status Bar -->
+                    <div style="display: flex; justify-content: flex-end; margin-top: 1rem; font-size: 0.8rem; color: #7d9bbd;">
+                        <span id="timestamp"></span>
+                    </div>
+                </div>
+            
+                <!-- JavaScript -->
+                <script>
+                    function updateTime() {
+                        const now = new Date();
+                        document.getElementById('timestamp').textContent = "Last update: " + now.toLocaleString();
+                    }
+                    updateTime();
+            
+                    document.getElementById('hotspot-button').addEventListener('click', function() {
+                        fetch('/your-api-endpoint')  // Replace with your real API endpoint
+                            .then(response => response.json())
+                            .then(data => {
+                                const tableBody = document.getElementById('hotspotTable');
+                                tableBody.innerHTML = '';
+            
+                                data.forEach((item, index) => {
+                                    const row = `<tr>
+                                        <td>${item.city}</td>
+                                        <td>${item.temperature}°C</td>
+                                        <td>${item.humidity}%</td>
+                                        <td>${item.windSpeed} m/s</td>
+                                        <td style="color: ${getRiskColor(item.riskLevel)};">${item.riskLevel}</td>
+                                    </tr>`;
+                                    tableBody.innerHTML += row;
+                                });
+            
+                                updateTime();
+                            });
+                    });
+            
+                    function getRiskColor(risk) {
+                        return risk === 'Critical' ? 'red' : risk === 'High' ? 'orange' : 'green';
+                    }
+                </script>
+            </section>
+            
+
+
+
+
+
+
+
+
+
+
+
+            <section class="disaster-prediction">
+                <div class="prediction-header">
+                    <h3 class="prediction-title">
+                        <span class="icon-globe">🌐</span> 
+                        <span class="title-text">Multi-Disaster Risk Prediction</span>
+                        <span class="tech-pulse"></span>
+                    </h3>
+                    <button id="checkDisasterRisk" class="scan-button">
+                        <span class="scan-icon">🔄</span>
+                        <span class="scan-text">Initiate Risk Scan</span>
+                        <span class="scanning-animation"></span>
+                    </button>
+                </div>
+                
+                <div class="risk-dashboard">
+                    <div class="risk-card flood">
+                        <div class="risk-gauge">
+                            <div class="gauge-fill" id="floodGauge"></div>
+                            <div class="gauge-percentage" id="floodPercentage">0%</div>
+                        </div>
+                        <div class="risk-info">
+                            <h4>Flood Risk</h4>
+                            <div class="risk-level" id="floodRisk">Analyzing...</div>
+                            <div class="risk-details" id="floodDetails">Hydrological sensors active</div>
+                        </div>
+                        <div class="risk-icon">🌊</div>
+                    </div>
+                    
+                    <div class="risk-card storm">
+                        <div class="risk-gauge">
+                            <div class="gauge-fill" id="stormGauge"></div>
+                            <div class="gauge-percentage" id="stormPercentage">0%</div>
+                        </div>
+                        <div class="risk-info">
+                            <h4>Storm Risk</h4>
+                            <div class="risk-level" id="stormRisk">Analyzing...</div>
+                            <div class="risk-details" id="stormDetails">Atmospheric scanners online</div>
+                        </div>
+                        <div class="risk-icon">⚡</div>
+                    </div>
+                    
+                    <div class="risk-card earthquake">
+                        <div class="risk-gauge">
+                            <div class="gauge-fill" id="earthquakeGauge"></div>
+                            <div class="gauge-percentage" id="earthquakePercentage">0%</div>
+                        </div>
+                        <div class="risk-info">
+                            <h4>Seismic Risk</h4>
+                            <div class="risk-level" id="earthquakeRisk">Analyzing...</div>
+                            <div class="risk-details" id="earthquakeDetails">Tectonic monitors engaged</div>
+                        </div>
+                        <div class="risk-icon">🌋</div>
+                    </div>
+                    
+                    <div class="risk-card wildfire">
+                        <div class="risk-gauge">
+                            <div class="gauge-fill" id="wildfireGauge"></div>
+                            <div class="gauge-percentage" id="wildfirePercentage">0%</div>
+                        </div>
+                        <div class="risk-info">
+                            <h4>Wildfire Risk</h4>
+                            <div class="risk-level" id="wildfireRisk">Analyzing...</div>
+                            <div class="risk-details" id="wildfireDetails">Thermal imaging initialized</div>
+                        </div>
+                        <div class="risk-icon">🔥</div>
+                    </div>
+                </div>
+                
+                <div class="prediction-footer">
+                    <div class="system-status">
+                        <span class="status-indicator active"></span>
+                        <span class="status-text">SYSTEM NOMINAL</span>
+                    </div>
+                    <p class="disclaimer">
+                        <span class="warning-icon">⚠️</span> 
+                        Predictive analysis based on real-time sensor data and historical patterns. 
+                        Accuracy may vary with environmental conditions.
+                    </p>
+                </div>
+            </section>
+            
+            <style>
+            .disaster-prediction {
+                font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+                max-width: 800px;
+                margin: 2rem auto;
+                padding: 1.5rem;
+                background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+                border-radius: 16px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                color: #e0e0e0;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .prediction-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding-bottom: 1rem;
+            }
+            
+            .prediction-title {
+                display: flex;
+                align-items: center;
+                font-size: 1.4rem;
+                font-weight: 500;
+                margin: 0;
+                color: #fff;
+                text-shadow: 0 0 10px rgba(100, 200, 255, 0.3);
+            }
+            
+            .icon-globe {
+                font-size: 1.8rem;
+                margin-right: 12px;
+                animation: pulse 4s infinite;
+            }
+            
+            .tech-pulse {
+                width: 8px;
+                height: 8px;
+                background: #4fc3f7;
+                border-radius: 50%;
+                margin-left: 10px;
+                box-shadow: 0 0 10px #4fc3f7;
+                animation: blink 2s infinite;
+            }
+            
+            .scan-button {
+                position: relative;
+                background: linear-gradient(90deg, #00c6ff, #0072ff);
+                border: none;
+                color: white;
+                padding: 0.8rem 1.5rem;
+                border-radius: 50px;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+            }
+            
+            .scan-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+            }
+            
+            .scan-button:active {
+                transform: translateY(0);
+            }
+            
+            .scan-icon {
+                font-size: 1.2rem;
+            }
+            
+            .scanning-animation {
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: none;
+            }
+            
+            .scan-button.active .scanning-animation {
+                left: 100%;
+                transition: left 1.5s ease-in-out;
+            }
+            
+            .risk-dashboard {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .risk-card {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                padding: 1rem;
+                display: flex;
+                flex-direction: column;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .risk-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                background: rgba(255, 255, 255, 0.08);
+            }
+            
+            .risk-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 3px;
+                height: 100%;
+            }
+            
+            .flood::before { background: #00b4d8; }
+            .storm::before { background: #48cae4; }
+            .earthquake::before { background: #f8961e; }
+            .wildfire::before { background: #f94144; }
+            
+            .risk-gauge {
+                width: 100%;
+                height: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 4px;
+                margin: 0.8rem 0;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .gauge-fill {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 0%;
+                border-radius: 4px;
+                transition: width 1s ease-out;
+            }
+            
+            .flood .gauge-fill { background: #00b4d8; }
+            .storm .gauge-fill { background: #48cae4; }
+            .earthquake .gauge-fill { background: #f8961e; }
+            .wildfire .gauge-fill { background: #f94144; }
+            
+            .gauge-percentage {
+                position: absolute;
+                right: 0;
+                top: -1.8rem;
+                font-size: 0.9rem;
+                font-weight: bold;
+            }
+            
+            .risk-info {
+                flex-grow: 1;
+            }
+            
+            .risk-info h4 {
+                margin: 0 0 0.3rem 0;
+                font-size: 1.1rem;
+                color: #fff;
+            }
+            
+            .risk-level {
+                font-weight: 600;
+                font-size: 1rem;
+                margin-bottom: 0.3rem;
+            }
+            
+            .risk-details {
+                font-size: 0.75rem;
+                opacity: 0.7;
+                line-height: 1.4;
+            }
+            
+            .risk-icon {
+                font-size: 2rem;
+                text-align: right;
+                margin-top: 0.5rem;
+                opacity: 0.7;
+            }
+            
+            .prediction-footer {
+                margin-top: 1rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                padding-top: 1rem;
+            }
+            
+            .system-status {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 0.8rem;
+            }
+            
+            .status-indicator {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #4ade80;
+                box-shadow: 0 0 10px #4ade80;
+            }
+            
+            .status-text {
+                font-size: 0.8rem;
+                font-weight: 600;
+                letter-spacing: 1px;
+                color: #4ade80;
+            }
+            
+            .disclaimer {
+                font-size: 0.75rem;
+                color: rgba(255, 255, 255, 0.6);
+                margin: 0;
+                line-height: 1.5;
+            }
+            
+            .warning-icon {
+                margin-right: 5px;
+                font-size: 0.9rem;
+            }
+            
+            /* Animations */
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+                100% { transform: scale(1); }
+            }
+            
+            @keyframes blink {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.3; }
+            }
+            
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .prediction-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 1rem;
+                }
+                
+                .risk-dashboard {
+                    grid-template-columns: 1fr 1fr;
+                }
+            }
+            
+            @media (max-width: 480px) {
+                .risk-dashboard {
+                    grid-template-columns: 1fr;
+                }
+            }
+            </style>
+            
+            
+            
+            
+            
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container py-4">
+            <div class="copyright">
+                <strong><span>Res-Q</span></strong>
+            </div>
+            <div class="credits">
+                Designed by Ismail Basheer
+            </div>
+        </div>
+    </footer>
+
+    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="{{ url_for('static', filename='assets/vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/jquery.easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/owl.carousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/venobox/venobox.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+
+    <!-- Chatbot UI -->
+    <div id="chat-icon">
+        <div id="chat-popup">Need help? Click me!</div>
+    </div>
+
+    <div id="chat-container">
+        <div id="chatbox">
+            <div id="chat-messages"></div>
+            <div id="input-container">
+                <input type="text" id="user-input" placeholder="Type your message here..." autocomplete="off">
+                <button id="send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const chatIcon = document.getElementById("chat-icon");
+            const chatContainer = document.getElementById("chat-container");
+            const chatPopup = document.getElementById("chat-popup");
+            const chatMessages = document.getElementById("chat-messages");
+            const userInput = document.getElementById("user-input");
+            const sendButton = document.getElementById("send-button");
+
+            let isGenerating = false;
+            let hideTimeout;
+
+            // Show/hide chat container
+            chatIcon.addEventListener("click", function() {
+                chatContainer.classList.toggle("show");
+                if (chatContainer.classList.contains("show")) {
+                    userInput.focus();
+                }
+            });
+
+            // Show popup on hover
+            chatIcon.addEventListener("mouseenter", function() {
+                clearTimeout(hideTimeout);
+                chatPopup.style.display = "block";
+                setTimeout(() => chatPopup.style.opacity = "1", 10);
+            });
+
+            // Hide popup after delay
+            chatIcon.addEventListener("mouseleave", function() {
+                chatPopup.style.opacity = "0";
+                setTimeout(() => chatPopup.style.display = "none", 300);
+            });
+
+            // Format bot response with proper HTML
+            function formatBotResponse(text) {
+                if (!text) return "";
+                
+                // Convert markdown to HTML
+                text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                text = text.replace(/\n\n/g, '<br><br>');
+                text = text.replace(/\n/g, '<br>');
+                
+                // Convert numbered lists
+                text = text.replace(/(\d+)\.\s/g, '<br>$1. ');
+                
+                return text;
+            }
+
+            // Create typing indicator
+            function showTypingIndicator() {
+                const typingDiv = document.createElement("div");
+                typingDiv.className = "message bot-message typing-indicator";
+                typingDiv.innerHTML = `
+                    <strong>Bot:</strong>
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                `;
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                return typingDiv;
+            }
+
+            // Send message function
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message === "" || isGenerating) return;
+                
+                // Add user message
+                const userMessage = document.createElement("div");
+                userMessage.className = "message user-message";
+                userMessage.innerHTML = `<strong>You:</strong> ${message}`;
+                chatMessages.appendChild(userMessage);
+                userInput.value = "";
+                
+                // Show typing indicator
+                const typingIndicator = showTypingIndicator();
+                isGenerating = true;
+                
+                // Send to backend
+                fetch("/groq-api", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ message }),
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    // Remove typing indicator
+                    chatMessages.removeChild(typingIndicator);
+                    
+                    // Add bot response
+                    const botMessage = document.createElement("div");
+                    botMessage.className = "message bot-message";
+                    botMessage.innerHTML = `<strong>Res-Q:</strong> ${formatBotResponse(data.response)}`;
+                    chatMessages.appendChild(botMessage);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .catch(error => {
+                    chatMessages.removeChild(typingIndicator);
+                    const errorMessage = document.createElement("div");
+                    errorMessage.className = "message error-message";
+                    errorMessage.innerHTML = `<strong>Error:</strong> ${error.message || "Failed to get response"}`;
+                    chatMessages.appendChild(errorMessage);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                })
+                .finally(() => {
+                    isGenerating = false;
+                });
+            }
+
+            // Handle send button click
+            sendButton.addEventListener("click", sendMessage);
+
+            // Handle Enter key (but allow Shift+Enter for new lines)
+            userInput.addEventListener("keydown", function(e) {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // Auto-scroll to bottom when new messages arrive
+            const observer = new MutationObserver(function() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+            observer.observe(chatMessages, { childList: true });
+        });
+
+
+
+        
+       
+
+
+        
+    </script>
+
+
+    <script defer src="static/assets/js/script1.js"></script>
+
+   
+
+
+</body>
+</html>
