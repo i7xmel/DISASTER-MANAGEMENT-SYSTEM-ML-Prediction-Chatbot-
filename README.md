@@ -102,12 +102,6 @@ All models are trained on synthetic datasets built using domain-based rules and 
 
 ## Screenshots
 
-Folder:
-`DISASTER-MANAGEMENT-SYSTEM-ML-Prediction-Chatbot-/Screenshots`
-
-```md
-## Screenshots
-
 ![Homepage](Screenshots/Home.png)
 ![Screenshot 2](Screenshots/2.png)
 ![Screenshot 7](Screenshots/7.png)
@@ -120,8 +114,6 @@ Folder:
 ![Screenshot 10](Screenshots/10.png)
 ![Screenshot 11](Screenshots/11.png)
 ![Screenshot 12](Screenshots/12.png)
-```
 
----
 
 
