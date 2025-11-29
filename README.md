@@ -111,8 +111,8 @@ Used for chatbot responses and first-aid guidance.
   <img src="Screenshots/8.png" height="200">
   <img src="Screenshots/9.png" height="200">
   <img src="Screenshots/10.png" height="200">
-  <img src="Screenshots/11.png" height="150">
-  <img src="Screenshots/12.png" height="150">
+  <img src="Screenshots/11.png" height="170">
+  <img src="Screenshots/12.png" height="170">
 </p>
 
 
