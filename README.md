@@ -109,7 +109,7 @@ All models are trained on synthetic datasets built using domain-based rules and 
 ![Screenshot 9](Screenshots/9.png)
 ![Chatbot](Screenshots/Chatbot.png)
 ![Current Location Risk Analysis](Screenshots/loc.png)
-![Detailed Location Risk Analysis](Screenshots/currentlocation.png)
+![Detailed Location Risk Analysis](Screenshots/Currentloaction.png)
 ![General Risk Prediction](Screenshots/GenaralPrediction.png)
 ![Screenshot 10](Screenshots/10.png)
 ![Screenshot 11](Screenshots/11.png)
