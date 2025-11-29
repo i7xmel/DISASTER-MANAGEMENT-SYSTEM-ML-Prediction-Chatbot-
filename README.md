@@ -101,10 +101,10 @@ Used for chatbot responses and first-aid guidance.
 
 
 <p>
-  <img src="Screenshots/Home.png" height="200">
+  <img src="Screenshots/Home.png" height="400">
   <img src="Screenshots/2.png" height="200">
-  <img src="Screenshots/Chatbot.png" height="200">
-  <img src="Screenshots/loc.png" height="200">
+  <img src="Screenshots/Chatbot.png" height="300">
+  <img src="Screenshots/loc.png" height="400">
   <img src="Screenshots/Currentloaction.png" height="200">
   <img src="Screenshots/GenaralPrediction.png" height="200">
   <img src="Screenshots/7.png" height="200">
